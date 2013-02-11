@@ -1,0 +1,152 @@
+/* line 1, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+* {
+  outline-style: none;
+}
+
+/* line 2, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+h1, h2, h3, h4, h5, h6, pre, code {
+  font-size: 1em;
+}
+
+/* line 3, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, body, html, p, blockquote, fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+/* line 4, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+input {
+  margin: 0;
+}
+
+/* line 5, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+a img, :link img, :visited img {
+  border: none;
+}
+
+/* line 6, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 7, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+th {
+  text-align: left;
+}
+
+/* line 8, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+h1, h2, h3, h4 {
+  font-size: 100%;
+}
+
+/* line 9, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+q:before, q:after {
+  content: '';
+}
+
+/* line 10, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+pre, code {
+  font: 115% monospace;
+  font-size: 100%;
+}
+
+/* line 11, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+th {
+  text-align: left;
+}
+
+/* line 12, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+cite, code, th, address {
+  font-style: normal;
+  font-weight: normal;
+}
+
+/* line 13, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+body {
+  font-size: 62.5%;
+}
+
+/* line 14, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+table {
+  border-spacing: 0;
+  border: 0;
+}
+
+/* line 15, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/reset.scss */
+table td {
+  padding: 0;
+}
+
+/*
+@font-face {
+  font-family: 'headerfont';
+  src: url('../font/teuton21pro-webfont.eot');
+  src: url('../font/teuton21pro-webfont.eot?#iefix') format('embedded-opentype'),
+  url('../font/teuton21pro-webfont.woff') format('woff'),
+  url('../font/teuton21pro-webfont.ttf') format('truetype'),
+  url('../font/teuton21pro-webfont.svg#Teuton21ProRegular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+*/
+/* line 3, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/app.scss */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+/* line 11, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/app.scss */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* line 16, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/app.scss */
+body {
+  background: #333333;
+  font-size: 0.625em;
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+
+/* line 24, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/app.scss */
+.container {
+  position: relative;
+}
+
+/* line 28, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/app.scss */
+.center-container {
+  position: relative;
+  top: 50%;
+  left: 50%;
+}
+
+/* line 37, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/app.scss */
+.clearfix, .clear, .clearer {
+  display: block;
+  height: 1;
+  clear: both;
+}
+
+/* line 43, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/app.scss */
+.left {
+  float: left;
+}
+
+/* line 47, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/app.scss */
+.right {
+  float: right;
+}
+
+/* line 51, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/app.scss */
+.center {
+  margin: 0 auto;
+}
+
+/* line 55, /Users/phil/Sites/git/clients/_html_template/html/assets/sass/app.scss */
+.center-text {
+  text-align: center;
+}

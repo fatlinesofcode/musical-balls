@@ -1,0 +1,178 @@
+<project name="_html_template" default="git-status" basedir=".">
+    <property file="${basedir}/build.mac.properties"/>
+    <property name="PROJECT_NAME" value="${ant.project.name}"/>
+
+
+    <property name="LOCAL_HTTP_PATH" value="http://phils-imac/git/clients/${PROJECT_NAME}/html/"/>
+    <property name="REMOTE_HTTP_PATH" value="http://srv.re/${PROJECT_NAME}/html/"/>
+    <property name="HTML_PATH" value="${user.home}/Sites/git/clients/${PROJECT_NAME}/html/"/>
+    <property name="JS_SRC_PATH" value="${user.home}/Sites/git/clients/${PROJECT_NAME}/src/js/"/>
+    <property name="JS_BUILD_PATH" value="${HTML_PATH}/assets/js/build/"/>
+    <property name="JS_COMPILER" value="${user.home}/Sites/libs/closure/compile-js.sh"/>
+
+    <!--
+    <target name="-publishHtml">
+        <exec executable="${BASH}">
+            <arg line=" -l -c 'cd ${HTML_PATH}; php build.php page=${pagename} > ${output}.html'"/>
+        </exec>
+        <echo>${pagename} published</echo>
+    </target>
+
+
+    <target name="dropboxPull">
+        <antcall target="-rysnc">
+            <param name="localpath" value="${DROPBOX_PATH}"/>
+            <param name="remotepath" value="${HTML_PATH}"/>
+            <param name="exclude" value="*.php"/>
+        </antcall>
+    </target>
+    <target name="dropboxPush">
+        <antcall target="-rysnc">
+            <param name="localpath" value="${COMMITED_PATH}"/>
+            <param name="remotepath" value="${DROPBOX_PATH}"/>
+            <param name="exclude" value="*.php"/>
+        </antcall>
+    </target>
+    -->
+    <!--
+
+    <target name="updateViaFTP" description="uploads files through ftp">
+        <echo message="uploading files"/>
+        <ftp server="ftp.com.au"
+             port="21"
+             remotedir="/public/www/trashpack"
+             userid="user"
+             password="password"
+             passive="no"
+             depends="yes"
+             verbose="yes"
+             timediffauto="true"
+             binary="yes">
+            <fileset dir="${HTML_PATH}">
+                <exclude name="**/.svn/**" />
+                <exclude name="**/.git/**" />
+                <include name="js/app/*.js"/>
+                <include name="js/app/controllers/*.js"/>
+                <include name="js/app/directives/*.js"/>
+                <include name="js/app/services/*.js"/>
+                <include name="js/app/utils/*.js"/>
+                <include name="js/app/widgets/*.js"/>
+                <include name="js/plugins/*.js"/>
+                <include name="css/*.css"/>
+
+                <include name="tpl/*.html"/>
+                <include name="img/*.png"/>
+            </fileset>
+        </ftp>
+    </target>
+
+    -->
+
+
+    <target name="git-status">
+        <exec executable="${GIT}">
+            <arg line="status"/>
+        </exec>
+
+    </target>
+    <target name="git-add">
+        <exec executable="${GIT}">
+            <arg line="add ../."/>
+        </exec>
+    </target>
+    <target name="-git-commit">
+        <exec executable="${GIT}">
+            <arg line="commit -a -m '${message}'"/>
+        </exec>
+        <echo>git commit ${message}</echo>
+    </target>
+
+    <target name="-git-push-master">
+        <exec executable="${GIT}">
+            <arg line="push origin master"/>
+        </exec>
+        <echo>git commit ${message}</echo>
+    </target>
+
+    <target name="git-commit-latest" depends="git-add">
+        <antcall target="-git-commit">
+            <param name="message" value="latest"/>
+        </antcall>
+    </target>
+
+    <target name="-rysnc">
+        <exec executable="${BASH}">
+            <arg line=" -l -c 'rsync -zrptL --delete -e ssh  --include=core --include=tags --exclude='${exclude}' ${localpath} ${remotepath} '"/>
+        </exec>
+        <echo>html folder synced to remote</echo>
+    </target>
+
+    <target name="git-remote-pull">
+        <exec executable="${BASH}">
+            <arg line=" -c 'ssh phil@philipandrews.org@philipandrews.org cd srv/${PROJECT_NAME}\;git pull '"/>
+        </exec>
+        <echo>remote srv ${PROJECT_NAME} folder updated</echo>
+    </target>
+
+
+    <target name="-run-command">
+        <exec executable="${BASH}">
+            <arg line=" -c '${command}'"/>
+        </exec>
+        <echo>Executed ${command}</echo>
+    </target>
+
+
+    <target name="deploy-stage1">
+
+        <antcall target="git-add">
+        </antcall>
+        <antcall target="-git-commit">
+            <param name="message" value="deploy to stage1"/>
+        </antcall>
+        <antcall target="-git-push-master">
+        </antcall>
+        <antcall target="git-remote-pull">
+        </antcall>
+        <antcall target="git-status">
+        </antcall>
+
+        <echo>deploy-Stage1 done</echo>
+    </target>
+
+    <target name="compile-js-list-manifest">
+        <antcall target="-run-command">
+            <param name="command" value="
+            cd ${JS_SRC_PATH}app/; ${JS_COMPILER} list manifest.txt;
+            cd ${JS_SRC_PATH}plugins/; ${JS_COMPILER} list manifest.txt;
+            cd ${JS_SRC_PATH}utils/; ${JS_COMPILER} list manifest.txt;
+            "/>
+        </antcall>
+        <echo>list all js complete.</echo>
+    </target>
+
+
+    <target name="compile-js">
+        <antcall target="-run-command">
+            <param name="command" value="
+            cd ${JS_SRC_PATH}app/; ${JS_COMPILER} build ${JS_BUILD_PATH}${PROJECT_NAME}.app.min.js manifest.txt;
+            cd ${JS_SRC_PATH}plugins/; ${JS_COMPILER} build ${JS_BUILD_PATH}${PROJECT_NAME}.plugins.min.js manifest.txt;
+            cd ${JS_SRC_PATH}utils/; ${JS_COMPILER} build ${JS_BUILD_PATH}${PROJECT_NAME}.utils.min.js manifest.txt;
+            "/>
+        </antcall>
+        <echo>compile all js complete</echo>
+    </target>
+
+    <target name="compile-js-force-recompile">
+        <antcall target="-run-command">
+            <param name="command" value="
+            cd ${JS_SRC_PATH}app/; ${JS_COMPILER} rebuild ${JS_BUILD_PATH}${PROJECT_NAME}.app.min.js manifest.txt;
+            cd ${JS_SRC_PATH}plugins/; ${JS_COMPILER} rebuild ${JS_BUILD_PATH}${PROJECT_NAME}.plugins.min.js manifest.txt;
+            cd ${JS_SRC_PATH}utils/; ${JS_COMPILER} rebuild ${JS_BUILD_PATH}${PROJECT_NAME}.utils.min.js manifest.txt;
+            "/>
+        </antcall>
+        <echo>force compile all js complete</echo>
+    </target>
+
+
+</project>
