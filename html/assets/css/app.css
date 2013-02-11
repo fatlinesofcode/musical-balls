@@ -1,0 +1,73 @@
+/*
+@font-face {
+  font-family: 'headerfont';
+  src: url('../font/teuton21pro-webfont.eot');
+  src: url('../font/teuton21pro-webfont.eot?#iefix') format('embedded-opentype'),
+  url('../font/teuton21pro-webfont.woff') format('woff'),
+  url('../font/teuton21pro-webfont.ttf') format('truetype'),
+  url('../font/teuton21pro-webfont.svg#Teuton21ProRegular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+*/
+/* line 3, ../sass/app.scss */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+/* line 11, ../sass/app.scss */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* line 16, ../sass/app.scss */
+body {
+  background: #333333;
+  font-size: 0.625em;
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+
+/* line 24, ../sass/app.scss */
+.container {
+  position: relative;
+}
+
+/* line 28, ../sass/app.scss */
+.center-container {
+  position: relative;
+  top: 50%;
+  left: 50%;
+}
+
+/* line 37, ../sass/app.scss */
+.clearfix, .clear, .clearer {
+  display: block;
+  height: 1;
+  clear: both;
+}
+
+/* line 43, ../sass/app.scss */
+.left {
+  float: left;
+}
+
+/* line 47, ../sass/app.scss */
+.right {
+  float: right;
+}
+
+/* line 51, ../sass/app.scss */
+.center {
+  margin: 0 auto;
+}
+
+/* line 55, ../sass/app.scss */
+.center-text {
+  text-align: center;
+}
