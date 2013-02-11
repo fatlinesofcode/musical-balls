@@ -21,7 +21,7 @@
     <![endif]-->
 
 </head>
-<body ng-controller="AppController">
+<body ng-controller="AppController" >
 <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a
     different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a>
     to experience this site.</p><![endif]-->
@@ -45,20 +45,21 @@
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular-resource.min.js"></script>
 -->
+<script src="assets/js/libs/EventDispatcher.js"></script>
+<script src="assets/js/libs/Sound.js"></script>
+<script src="assets/js/libs/WebAudioPlugin.js"></script>
+<script src="assets/js/libs/HTMLAudioPlugin.js"></script>
+
+<script src="assets/js/balls1.js"></script>
+
+<script>
+setTimeout(function(){
+    initSound();
+},100);
+</script>
 <script src="assets/js/libs/paper.js"></script>
 
 <script type="text/paperscript" canvas="ball-stage" src="assets/pjs/balls1.pjs">
 
-<script>
-    var _gaq = [
-        ['_setAccount', 'UA-XXXXX-X'],
-        ['_trackPageview']
-    ];
-    (function (d, t) {
-        var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
-        g.src = ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js';
-        s.parentNode.insertBefore(g, s)
-    }(document, 'script'));
-</script>
 </body>
 </html>

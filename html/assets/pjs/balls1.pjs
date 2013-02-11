@@ -60,6 +60,7 @@ var Ball = Base.extend({
 
         if(hit && (Math.abs(this.vector.y) > 3)){
             console.log("hit", this)
+            playSound(1);
         }
 
         var max = Point.max(this.radius, this.point + this.vector);
