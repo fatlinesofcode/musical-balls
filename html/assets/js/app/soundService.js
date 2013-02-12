@@ -20,7 +20,9 @@ app.factory('soundService', [ function () {
         {sound: 'C_', id: 8},
         {sound: 'blank', id: 100}
     ];
-
+    self.sounds1 = [
+        {sound: 'Game-Shot', id: 1}
+    ];
     self.initialize = function () {
         log("11", "soundService", "initialize", "");
         self.initSound()
@@ -90,8 +92,9 @@ app.factory('soundService', [ function () {
 
 
     self.playSound = function (id) {
+        log("95","service","playSound", id);
         //Play the sound: play (src, interrupt, delay, offset, loop, volume, pan)
-        var instance = createjs.Sound.play(id, createjs.Sound.INTERRUPT_NONE, 0, 0, false, 1);
+        var instance = createjs.Sound.play(id, createjs.Sound.INTERRUPT_LATE);//, 0, 0, false, 1);
         if (instance == null || instance.playState == createjs.Sound.PLAY_FAILED) { return; }
         instance.onComplete = function (instance) {
         }
