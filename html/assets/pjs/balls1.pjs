@@ -1,6 +1,9 @@
 var balls = [];
 var group = new Group();
 
+var _gravityY = 1;
+var _gravityX = 1;
+
 var Ball = Base.extend({
     initialize: function(point, vector) {
         if (!vector || vector.isZero()) {
@@ -10,7 +13,6 @@ var Ball = Base.extend({
         }
         this.point = point;
         this.dampen = 0.4;
-        this.gravity = 1;//3;
         this.bounce = -0.6;
         this.radius = 50 * Math.random() + 30;
         this.createPaths();
@@ -43,8 +45,8 @@ var Ball = Base.extend({
 
     iterate: function() {
         var size = view.size;
-        this.vector.y += this.gravity;
-        this.vector.x *= 0.99;
+        this.vector.y = _gravityY;
+        this.vector.x =_gravityX;//+= (_gravityX*0.1);
         var pre = this.point + this.vector;
         var hit = false;
         if (pre.x < this.radius || pre.x > size.width - this.radius){
@@ -155,6 +157,37 @@ function playSound(id) {
     }
 
 }
+
+function onDeviceMotion( event )
+{
+    $('#timestamp').html( new Date().toString() );
+    $('#status').html( "Device Motion Event" );
+
+    var eventDetails;
+    try {
+        var accel = event.accelerationIncludingGravity;
+        eventDetails = "accelerationIncludingGravity: {" +
+                "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: " + accel.x +
+                "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: " + accel.y +
+                "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z: " + accel.z +
+                "<br/>} <br/><br/>" +
+                "interval: " + event.interval;
+     //   updateVelocity( event );
+       // _gravityY *= accel.y;
+        _gravityY = (accel.x*-1);
+        _gravityX = (accel.y*-1);
+    }
+    catch (e)
+    {
+        eventDetails = e.toString();
+    }
+
+    $('#details').html( eventDetails );
+}
+
+window.addEventListener( "devicemotion", onDeviceMotion, false );
+
+
 
 setTimeout(function () {
     initSound();
