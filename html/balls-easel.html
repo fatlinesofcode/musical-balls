@@ -24,7 +24,6 @@
             color: white; display: none; font-size: 40px; font-family: arial; text-align: center; margin-top: 200px;
         }
         #ball-stage{
-            display: none;
         }
     </style>
 </head>
@@ -36,10 +35,10 @@
 
 </header>
 <div role="main">
-    musical balls #1 paper-js
+    <div>musical balls #1 easel-js</div>
 
     <canvas width="800" height="600" id="ball-stage" ></canvas>
-    <a id="bt-start" href="javascript:void(0)">Start</a>
+    <a id="bt-start" href="javascript:void(0)" ng-click="start()" ng-hide="running">Start</a>
     <div id="details"></div>
 </div>
 <footer>
@@ -50,19 +49,21 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 -->
 <script>window.jQuery || document.write('<script src="assets/js/libs/jquery-1.7.1.min.js"><\/script>')</script>
-<!--
+
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular-resource.min.js"></script>
--->
+
 <script src="assets/js/libs/easeljs-NEXT.min.js"></script>
+
 <script src="assets/js/libs/soundjs-NEXT.min.js"></script>
 
 
 <script src="assets/js/app/InputEvent.js"></script>
+<script src="assets/js/app/log.js"></script>
+<script src="assets/js/app/booter.js"></script>
+<script src="assets/js/app/soundService.js"></script>
+<script src="assets/js/app/AppController.js"></script>
 
-<script src="assets/js/libs/paper.js"></script>
 
-<script type="text/paperscript" canvas="ball-stage" src="assets/pjs/balls1.pjs">
-</script>
 </body>
 </html>
