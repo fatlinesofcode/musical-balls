@@ -100,13 +100,13 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         stageClicked=true;
             infoText.text = "Tilt your device or use your keyboard to change gravity."
          	
-         		initBalls();
+         		initBalls(e);
          	
          		
         }else
         addBall(e.stageX, e.stageY, e.pointerID)
     }
-    var initBalls = function(){
+    var initBalls = function(e){
     	var tx = 0;
             var ty = 0;
         	for(var i=0; i < 7; i++){
