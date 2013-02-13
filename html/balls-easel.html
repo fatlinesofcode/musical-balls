@@ -36,12 +36,28 @@
         }
         #ball-stage{
         }
+        #about{
+            position: absolute;
+            top:0;
+            right:0;
+            z-index: 2;
+        }
+        #about a{
+            color:black !important;
+            background: white;
+            padding:3px 5px;
+            text-decoration: none;
+            margin-right: 5px;
+            font-family: arial;
+            font-size: 12px;
+        }
         [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak { display: none; }
     </style>
 </head>
 <body ng-controller="AppController" >
 
     <div id="title">musical balls #1 easel.js</div>
+    <div id="about"><a href="http://fatlinesofcode.philipandrews.org/2013/02/12/html5-musical-balls/">About</a></div>
     <div id="tx-loading" ng-cloak ng-hide="initialized">Loading {{soundService.loadAmount}}</div>
     <canvas  id="ball-stage" ></canvas>
     <!--
