@@ -6,6 +6,7 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
 
     self.running = false;
     self.initialized = false;
+    var stageClicked = false;
     self.soundService = soundService;
     var stage, canvas;
 
@@ -20,6 +21,8 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
     var KEYCODE_LEFT = 37;		//usefull keycode
     var KEYCODE_RIGHT = 39;		//usefull keycode
     var KEYCODE_DOWN = 40;		//usefull keycode
+    
+    var iOS = navigator.userAgent.match(/(iPod|iPhone|iPad)/);
 
     self.initialize = function () {
         toggleListeners(true);
@@ -57,7 +60,7 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         canvas = $("#ball-stage").get(0);
         stage = new createjs.Stage(canvas);
 
-        infoText = new createjs.Text("Click or touch to add balls", "14px Arial", "#FFF");
+        infoText = new createjs.Text("Click or touch to add more balls", "14px Arial", "#FFF");
         infoText.lineWidth = "500";
         infoText.textAlign = "center";
         infoText.border = 1;
@@ -80,7 +83,11 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         createjs.Touch.enable(stage);
         createjs.Ticker.addListener(tick);
         createjs.Ticker.setFPS(FPS);
-
+		
+		if(! iOS){
+         	initBalls();
+         }
+         	
         self.initialized = true;
     }
     var onStageResize = function () {
@@ -91,18 +98,24 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
     }
     var onStagePress = function(e) {
         log("56","onStagePress","e", e);
-        if(balls.length==0){
+        if(! stageClicked){
+        stageClicked=true;
             infoText.text = "Tilt your device or use your keyboard to change gravity."
-         //   infoText.x = ($(window).width()/2) - 180;
-         		var tx = 0;
+         	if(iOS){
+         		initBalls();
+         	}
+         		
+        }else
+        addBall(e.stageX, e.stageY, e.pointerID)
+    }
+    var initBalls = function(){
+    	var tx = 0;
             var ty = 0;
         	for(var i=0; i < 7; i++){
         		tx = rand(-300, 300);
         		ty = rand(-200, 200);
         		addBall(e.stageX+tx, e.stageY+ty, NaN)
         	}
-        }else
-        addBall(e.stageX, e.stageY, e.pointerID)
     }
     var onStageRelease = function(e) {
 
