@@ -119,7 +119,8 @@ app.factory('soundService', ['$timeout', function ($timeout) {
 
 
     self.playSound = function (id) {
-        var instance = createjs.Sound.play(id, createjs.Sound.INTERRUPT_LATE);//, 0, 0, false, 1);
+      //  var instance = createjs.Sound.play(id, createjs.Sound.INTERRUPT_LATE);//, 0, 0, false, 1);
+        var instance = createjs.Sound.play(id, createjs.Sound.INTERRUPT_NONE);//, 0, 0, false, 1);
         if (instance == null || instance.playState == createjs.Sound.PLAY_FAILED) { return; }
         instance.onComplete = function (instance) {
         }
