@@ -230,7 +230,8 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
             ball1.graphics.beginFill(color1);
             ball1.graphics.drawCircle(0, 0, ball1.radius)
 
-            soundService.playSound(parseInt(rand(1,8)))
+            //soundService.playSound(parseInt(rand(1,8)))
+            soundService.playNextNote();
         }
     }
 
