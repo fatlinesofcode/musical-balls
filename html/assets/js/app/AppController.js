@@ -94,7 +94,14 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         if(balls.length==0){
             infoText.text = "Tilt your device or use your keyboard to change gravity."
          //   infoText.x = ($(window).width()/2) - 180;
-        }
+         		var tx = 0;
+            var ty = 0;
+        	for(var i=0; i < 7; i++){
+        		tx = rand(-100, 100);
+        		ty = rand(-100, 100);
+        		addBall(e.stageX+tx, e.stageY+ty, NaN)
+        	}
+        }else
         addBall(e.stageX, e.stageY, e.pointerID)
     }
     var onStageRelease = function(e) {
