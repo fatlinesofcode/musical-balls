@@ -107,7 +107,7 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
          	
          		
         }
-        if(ballsInitalized){
+        if(!ballsInitalized){
         initBalls(e.stageX, e.stageY);
         }else        
         addBall(e.stageX, e.stageY, e.pointerID)
