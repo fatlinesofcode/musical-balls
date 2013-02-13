@@ -84,9 +84,7 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         createjs.Ticker.addListener(tick);
         createjs.Ticker.setFPS(FPS);
 		
-		if(! iOS){
-         	initBalls();
-         }
+		
          	
         self.initialized = true;
     }
@@ -101,9 +99,9 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         if(! stageClicked){
         stageClicked=true;
             infoText.text = "Tilt your device or use your keyboard to change gravity."
-         	if(iOS){
+         	
          		initBalls();
-         	}
+         	
          		
         }else
         addBall(e.stageX, e.stageY, e.pointerID)
