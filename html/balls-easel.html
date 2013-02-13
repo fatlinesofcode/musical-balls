@@ -20,29 +20,33 @@
     <script src="js/libs/modernizr-2.5.3.min.js"></script>
     <![endif]-->
     <style>
-        #bt-start {
-            color: white; display: none; font-size: 40px; font-family: arial; text-align: center; margin-top: 200px;
+        html, body{
+            height:100%;
+            width:100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #bt-start, #tx-loading {
+            color: white; font-size: 40px; font-family: arial; text-align: center; margin-top: 200px;
         }
         #ball-stage{
         }
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak { display: none; }
     </style>
 </head>
-<body ng-controller="AppController">
-<!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a
-    different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a>
-    to experience this site.</p><![endif]-->
-<header>
+<body ng-controller="AppController" >
 
-</header>
-<div role="main">
-    <div>musical balls #1 easel-js</div>
-    <div id="details"></div>
-    <canvas width="800" height="600" id="ball-stage" ng-show="running"></canvas>
-    <a id="bt-start" href="javascript:void(0)" ng-click="start()" ng-hide="running">Start</a>
-</div>
-<footer>
-
-</footer>
+    <div id="title">musical balls #1 easel.js</div>
+    <div id="tx-loading" ng-cloak ng-hide="initialized">Loading {{soundService.loadAmount}}</div>
+    <canvas  id="ball-stage" ></canvas>
+    <!--
+    <a id="bt-start" href="javascript:void(0)" ng-click="start()" ng-hide="initialized">Start</a>
+    -->
 
 <!--
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
