@@ -57,8 +57,10 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         canvas = $("#ball-stage").get(0);
         stage = new createjs.Stage(canvas);
 
-        infoText = new createjs.Text("Click or touch to add balls", "16px Arial", "#FFF");
-        infoText.x = ($(window).width()/2) - 85;
+        infoText = new createjs.Text("Click or touch to add balls", "14px Arial", "#FFF");
+        infoText.lineWidth = "500";
+        infoText.textAlign = "center";
+        infoText.border = 1;
         infoText.y = 300;
         infoText.mouseEnabled = false;
 
@@ -84,14 +86,14 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
     var onStageResize = function () {
         stage.canvas.width = $(window).width()
         stage.canvas.height = $(window).height()
-
+        infoText.x = ($(window).width()/2) - 0;
         log("64","onStageResize","stage.canvas.width", canvas.width );
     }
     var onStagePress = function(e) {
         log("56","onStagePress","e", e);
         if(balls.length==0){
             infoText.text = "Tilt your device or use your keyboard to change gravity."
-            infoText.x = ($(window).width()/2) - 180;
+         //   infoText.x = ($(window).width()/2) - 180;
         }
         addBall(e.stageX, e.stageY, e.pointerID)
     }
