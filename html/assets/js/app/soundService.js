@@ -71,7 +71,7 @@ app.factory('soundService', ['$timeout', function ($timeout) {
     var soundLoaded = function (event) {
         _numLoaded++;
         $timeout(function(){
-            self.loadAmount = (~~(_numLoaded / self.sounds.length) * 100) + "%"
+            self.loadAmount = ~~((_numLoaded / self.sounds.length) * 100) + "%"
         });
 
         if(_numLoaded != self.sounds.length)return;
