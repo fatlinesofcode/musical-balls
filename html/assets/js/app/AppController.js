@@ -21,7 +21,7 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
     var KEYCODE_LEFT = 37;		//usefull keycode
     var KEYCODE_RIGHT = 39;		//usefull keycode
     var KEYCODE_DOWN = 40;		//usefull keycode
-    
+    var ballsInitalized = false;	
     var iOS = navigator.userAgent.match(/(iPod|iPhone|iPad)/);
 
     self.initialize = function () {
@@ -84,7 +84,9 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         createjs.Ticker.addListener(tick);
         createjs.Ticker.setFPS(FPS);
 		
-		
+		if(! iOS){
+			initBalls($(window).width()/2, $(window).height()/2);
+		}
          	
         self.initialized = true;
     }
@@ -94,25 +96,30 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         infoText.x = ($(window).width()/2) - 0;
         log("64","onStageResize","stage.canvas.width", canvas.width );
     }
+    
     var onStagePress = function(e) {
         log("56","onStagePress","e", e);
         if(! stageClicked){
         stageClicked=true;
             infoText.text = "Tilt your device or use your keyboard to change gravity."
          	
-         		initBalls(e);
+         		
          	
          		
-        }else
+        }
+        if(ballsInitalized){
+        initBalls(e.stageX, e.stageY);
+        }else        
         addBall(e.stageX, e.stageY, e.pointerID)
     }
-    var initBalls = function(e){
+    var initBalls = function(stageX, stageY){
+    	ballsInitalized = true;
     	var tx = 0;
             var ty = 0;
         	for(var i=0; i < 7; i++){
         		tx = rand(-300, 300);
         		ty = rand(-200, 200);
-        		addBall(e.stageX+tx, e.stageY+ty, NaN)
+        		addBall(stageX+tx, stageY+ty, NaN)
         	}
     }
     var onStageRelease = function(e) {
