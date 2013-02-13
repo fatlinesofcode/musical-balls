@@ -97,8 +97,8 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
          		var tx = 0;
             var ty = 0;
         	for(var i=0; i < 7; i++){
-        		tx = rand(-100, 100);
-        		ty = rand(-100, 100);
+        		tx = rand(-300, 300);
+        		ty = rand(-200, 200);
         		addBall(e.stageX+tx, e.stageY+ty, NaN)
         	}
         }else
