@@ -6,7 +6,7 @@ app.factory('soundService', ['$timeout', function ($timeout) {
     /* end */
     var _resource;
     var preload;
-    self.controller=null;
+    self.controller = null;
     self.loadAmount = 0;
     self.soundsPath = 'assets/mp3/';
 
@@ -24,12 +24,30 @@ app.factory('soundService', ['$timeout', function ($timeout) {
     self.sounds1 = [
         {sound: 'Game-Shot', id: 1}
     ];
+
+    var londonBridge = 'g,a,g,f' +
+            ',e,f,g' +
+            ',d,e,f' +
+            ',e,f,g' +
+            'g,a,g,f' +
+            'e,f,g,d,g,e,c';
+
+
+    self.notes = [5, 6, 5, 4,
+        3, 4, 5,
+        2, 3, 4,
+        3, 4, 5,
+        5, 6, 5, 4,
+        3, 4, 5, 2, 5, 3, 1
+    ]
+    var _noteIndex = 0;
+
     self.initialize = function () {
         log("11", "soundService", "initialize", "");
         self.initSound()
     };
 
-    var _numLoaded=0;
+    var _numLoaded = 0;
 
     self.resource = function () {
         return _resource;
@@ -70,29 +88,29 @@ app.factory('soundService', ['$timeout', function ($timeout) {
 
     var soundLoaded = function (event) {
         _numLoaded++;
-        $timeout(function(){
+        $timeout(function () {
             self.loadAmount = ~~((_numLoaded / self.sounds.length) * 100) + "%"
         });
 
-        if(_numLoaded != self.sounds.length)return;
+        if (_numLoaded != self.sounds.length)return;
 
         console.log("29", "soundLoaded", "soundLoaded", _numLoaded, self.sounds.length);
         $("#bt-start").css({display: 'block'})
-        setTimeout(function(){
+        setTimeout(function () {
             self.controller.start();
-        },100);
+        }, 100);
 
-      //  $("#bt-start").bind('mouseup', start)
+        //  $("#bt-start").bind('mouseup', start)
 
     }
     /*
-    self.start = function (e) {
-        console.log(InputEvent.pageX(e))
-        $("#bt-start").css({display: 'none'})
-        $("#ball-stage").css({display: 'block'})
-        // playSound(1)
-        addBall(new Point(parseInt(InputEvent.pageX(e)), parseInt(InputEvent.pageY(e))))
-    }*/
+     self.start = function (e) {
+     console.log(InputEvent.pageX(e))
+     $("#bt-start").css({display: 'none'})
+     $("#ball-stage").css({display: 'block'})
+     // playSound(1)
+     addBall(new Point(parseInt(InputEvent.pageX(e)), parseInt(InputEvent.pageY(e))))
+     }*/
 
     self.stop = function () {
         if (preload != null) { preload.close(); }
@@ -106,6 +124,13 @@ app.factory('soundService', ['$timeout', function ($timeout) {
         instance.onComplete = function (instance) {
         }
 
+    }
+    self.playNextNote = function () {
+        self.playSound(self.notes[_noteIndex])
+        _noteIndex++;
+        if(_noteIndex >= self.notes.length){
+            _noteIndex=0;
+        }
     }
 
     self.initialize()
