@@ -1,5 +1,24 @@
+/**
+ * Created by // frontside.com.au
+ *
+ * User: phil
+ * Date: 14/02/13
+ * Time: 3:54 PM
+ *
+ * Excuse the sloppy code. This was thrown together in a few hours.
+ */
+
 $(document).ready(function () {
-    new App(new soundService())
+    $.ajaxSetup({
+        cache: true
+    });
+    var url1 = "http://code.createjs.com/easeljs-0.6.0.min.js";
+    var url2 = "http://code.createjs.com/soundjs-0.4.0.min.js";
+    $.getScript(url1, function () {
+        $.getScript(url2, function () {
+            new App(new soundService())
+        })
+    })
 });
 function App(soundService) {
     /* structure hack for intellij structrue panel */
@@ -8,7 +27,6 @@ function App(soundService) {
     self.running = false;
     self.initialized = false;
     var stageClicked = false;
-    //var soundService = new soundService();
     var stage, canvas;
 
     var colors = ["#FFFFE0", "#BDFCC9", "#FFC0CB", "#DDA0DD", "#87CEEB", "#40E0D0", "#00CCCC"];
@@ -34,28 +52,22 @@ function App(soundService) {
 
 
     var toggleListeners = function (enable) {
-        // remove listeners
-
         if (!enable)return;
-        // add listeners.
 
     };
-    var onDestroy = function (enable) {
-        toggleListeners(false);
-    };
+
     self.refresh = function () {
 
     }
     self.start = function () {
-        log("25", "AppController", "s", "");
         self.initGame()
         self.refresh()
-        window.addEventListener( "devicemotion", onDeviceMotion, false );
+        window.addEventListener("devicemotion", onDeviceMotion, false);
+        stage.addEventListener("stagemousedown", onStagePress);
+        stage.addEventListener("stagemouseup", onStageRelease);
         $(document).bind('keydown', onKeyboardPress)
     }
     self.initCanvas = function () {
-        log("47","AppController","initCanvas" );
-
         canvas = $("#ball-stage").get(0);
         stage = new createjs.Stage(canvas);
 
@@ -63,7 +75,7 @@ function App(soundService) {
         infoText.lineWidth = "500";
         infoText.textAlign = "center";
         infoText.border = 1;
-        infoText.y = $(window).height()/2;
+        infoText.y = $(window).height() / 2;
         infoText.mouseEnabled = false;
 
         detailsText = new createjs.Text("", "10px Arial", "#FFF");
@@ -71,12 +83,10 @@ function App(soundService) {
         detailsText.y = 2;
         detailsText.mouseEnabled = false;
 
-        //txt.outline = true;
         stage.addChild(detailsText);
         stage.addChild(infoText);
 
-        stage.addEventListener("stagemousedown", onStagePress);
-        stage.addEventListener("stagemouseup", onStageRelease);
+
         window.addEventListener('resize', onStageResize, false);
         onStageResize();
         createjs.Touch.enable(stage);
@@ -84,67 +94,62 @@ function App(soundService) {
         createjs.Ticker.setFPS(FPS);
 
 
-
         self.initialized = true;
     }
-    self.initGame = function(){
-        if(! iOS){
-            initBalls($(window).width()/2, $(window).height()/2);
-        }else{
-            infoText.text="Touch to start."
+    self.initGame = function () {
+        if (!iOS) {
+            initBalls($(window).width() / 2, $(window).height() / 2);
+        } else {
+            infoText.text = "Touch to start."
         }
     }
     var onStageResize = function () {
         stage.canvas.width = $(window).width()
         stage.canvas.height = $(window).height()
-        infoText.x = ($(window).width()/2) - 0;
-        log("64","onStageResize","stage.canvas.width", canvas.width );
+        infoText.x = ($(window).width() / 2) - 0;
     }
 
-    var onStagePress = function(e) {
-        log("56","onStagePress","e", e);
-        if(! stageClicked){
-            stageClicked=true;
+    var onStagePress = function (e) {
+        if (!stageClicked) {
+            stageClicked = true;
             infoText.text = "Tilt your device or use your keyboard to change gravity."
         }
-        if(!ballsInitalized){
+        if (!ballsInitalized) {
             initBalls(e.stageX, e.stageY);
-            infoText.text="Click or touch to add more balls"
-        }else{
+            infoText.text = "Click or touch to add more balls"
+        } else {
             infoText.text = "Tilt your device or use your keyboard to change gravity."
             addBall(e.stageX, e.stageY, e.pointerID)
         }
     }
-    var initBalls = function(stageX, stageY){
+    var initBalls = function (stageX, stageY) {
         ballsInitalized = true;
         var tx = 0;
         var ty = 0;
-        for(var i=0; i < 7; i++){
+        for (var i = 0; i < 7; i++) {
             tx = rand(-300, 300);
             ty = rand(-200, 200);
-            addBall(stageX+tx, stageY+ty, NaN)
+            addBall(stageX + tx, stageY + ty, NaN)
         }
         infoText.text = "Click or touch to add more balls."
     }
-    var onStageRelease = function(e) {
-
-        log("62","onStageRelease","onStageRelease", e);
+    var onStageRelease = function (e) {
         for (var i = 0; i < numBalls(); i++) {
             var b = balls[i];
 
-            if(b.pointerID == e.pointerID){
+            if (b.pointerID == e.pointerID) {
                 b.pointerID = NaN;
-                log("66","onStageRelease","b", b.pointerID);
+                log("66", "onStageRelease", "b", b.pointerID);
             }
 
         }
     }
-    var addBall = function(x, y, pointerID) {
-        if(!self.running){
+    var addBall = function (x, y, pointerID) {
+        if (!self.running) {
             soundService.playSound(100)
-         //   $timeout(function(){
-                self.running = true;
-         //   });
+            //   $timeout(function(){
+            self.running = true;
+            //   });
 
         }
         var shape = new createjs.Shape();
@@ -153,31 +158,20 @@ function App(soundService) {
         var r = Math.random() * colors.length | 0;
         shape.color = colors[r];
         shape.graphics.beginFill(shape.color);
-        //shape.graphics.beginFill(colors[0]);
         shape.radius = 10 + (r * 4);
         shape.mass = shape.radius;
-        //  shape.diameter = shape.radius *2;
         shape.graphics.drawCircle(0, 0, shape.radius)
         shape.x = x || (Math.random() * canvas.width);
         shape.y = y || (Math.random() * canvas.height);
-        shape.vx = rand(-3,3)
-        shape.vy = rand(-3,3)
-        //shape.mouseEnabled = false;
-        //   shape.snapToPixel = true;
+        shape.vx = rand(-3, 3)
+        shape.vy = rand(-3, 3)
         stage.addChild(shape);
         balls.push(shape);
     }
-    var numBalls = function(){
+    var numBalls = function () {
         return balls.length;
     }
     var tick = function () {
-        /*
-         for (var i = 0; i < numOfBalls; i++) {
-         self.collide(balls[i]);
-         self.move(balls[i]);
-         }
-         */
-
         balls.forEach(move);
         for (var ballA, i = 0, len = numBalls() - 1; i < len; i++) {
             ballA = balls[i];
@@ -186,21 +180,20 @@ function App(soundService) {
                 checkCollision(ballA, ballB);
             }
         }
-        detailsText.text = "Gravity: x"+(~~(_gravityX*100)/100)+" : y"+(~~(_gravityY*100)/100)
+        detailsText.text = "Gravity: x" + (~~(_gravityX * 100) / 100) + " : y" + (~~(_gravityY * 100) / 100)
 
         stage.update();
     }
 
 
-
-    var rotate = function  (x, y, sin, cos, reverse) {
+    var rotate = function (x, y, sin, cos, reverse) {
         return {
             x: (reverse) ? (x * cos + y * sin) : (x * cos - y * sin),
             y: (reverse) ? (y * cos - x * sin) : (y * cos + x * sin)
         };
     }
 
-    var checkCollision = function  (ball0, ball1) {
+    var checkCollision = function (ball0, ball1) {
         var dx = ball1.x - ball0.x,
                 dy = ball1.y - ball0.y,
                 dist = Math.sqrt(dx * dx + dy * dy);
@@ -265,49 +258,44 @@ function App(soundService) {
     }
 
 
-    var checkWalls = function  (ball) {
+    var checkWalls = function (ball) {
         if (ball.x + ball.radius > canvas.width) {
             //  ball.x = canvas.width - ball.radius;
             setBallX(ball, canvas.width - ball.radius)
             ball.vx *= bounce;
-        } else if (ball.x - ball.radius < 0) {
-            // ball.x = ball.radius;
-            setBallX(ball, ball.radius)
-            ball.vx *= bounce;
-        }
+        } else
+            if (ball.x - ball.radius < 0) {
+                // ball.x = ball.radius;
+                setBallX(ball, ball.radius)
+                ball.vx *= bounce;
+            }
         if (ball.y + ball.radius > canvas.height) {
             //  ball.y = canvas.height - ball.radius;
             setBallY(ball, canvas.height - ball.radius)
             ball.vy *= bounce;
-        } else if (ball.y - ball.radius < 0) {
-            //ball.y = ball.radius;
-            setBallY(ball, ball.radius)
-            ball.vy *= bounce;
-        }
+        } else
+            if (ball.y - ball.radius < 0) {
+                //ball.y = ball.radius;
+                setBallY(ball, ball.radius)
+                ball.vy *= bounce;
+            }
     }
 
-    var move = function  (ball) {
+    var move = function (ball) {
         ball.vy += _gravityY;
         ball.vx += _gravityX;
-        //updatePosition(ball, ball.x+ball.vx,ball.y+ball.vy)
-        setBallX(ball, ball.x+ball.vx)
-        setBallY(ball, ball.y+ball.vy)
-        /*
-         if( isNaN(ball.pointerID)){
-         ball.x += ball.vx;
-         ball.y += ball.vy;
-         updatePosition(ball, ball.x+ball.vx,ball.y+ball.vy)
-         }*/
+        setBallX(ball, ball.x + ball.vx)
+        setBallY(ball, ball.y + ball.vy)
         checkWalls(ball);
     }
-    var setBallX = function(ball,x) {
-        if( isNaN(ball.pointerID)){
-            ball.x =x
+    var setBallX = function (ball, x) {
+        if (isNaN(ball.pointerID)) {
+            ball.x = x
         }
     }
-    var setBallY = function(ball,y) {
-        if( isNaN(ball.pointerID)){
-            ball.y =y
+    var setBallY = function (ball, y) {
+        if (isNaN(ball.pointerID)) {
+            ball.y = y
         }
     }
 
@@ -317,14 +305,12 @@ function App(soundService) {
         return (Math.random() * max) + min;
     }
 
-    var onKeyboardPress = function ( e ){
-
+    var onKeyboardPress = function (e) {
 
 
         var code = (e.keyCode ? e.keyCode : e.which);
-        log("290","onKeyboardPress","onKeyboardPress", code);
         var amt = 0.01;
-        switch(code){
+        switch (code) {
         case KEYCODE_UP:
             _gravityY -= amt
             break;
@@ -341,8 +327,7 @@ function App(soundService) {
             break;
         }
     }
-    var onDeviceMotion = function ( event )
-    {
+    var onDeviceMotion = function (event) {
 
         var eventDetails;
         try {
@@ -354,35 +339,33 @@ function App(soundService) {
 
             var o = window.orientation;
 
-            switch(o){
+            switch (o) {
             case 0:
-                _gravityX = ((accel.x))*0.01
-                _gravityY = (accel.y+9)*-0.01;
+                _gravityX = ((accel.x)) * 0.01
+                _gravityY = (accel.y + 9) * -0.01;
                 break;
             case 180:
-                _gravityX = ((accel.x))*-0.01
-                _gravityY = (accel.y+9)*0.01;
+                _gravityX = ((accel.x)) * -0.01
+                _gravityY = (accel.y + 9) * 0.01;
                 break;
 
             case -90:
-                _gravityY = ((accel.x-9)*1)*0.01
-                _gravityX = (accel.y*1)*0.01;
+                _gravityY = ((accel.x - 9) * 1) * 0.01
+                _gravityX = (accel.y * 1) * 0.01;
                 break;
 
             case 90:
-                _gravityY = ((accel.x+8)*-1)*0.01
-                _gravityX = (accel.y*-1)*0.01;
+                _gravityY = ((accel.x + 8) * -1) * 0.01
+                _gravityX = (accel.y * -1) * 0.01;
                 break;
             }
 
 
         }
-        catch (e)
-        {
+        catch (e) {
             eventDetails = e.toString();
         }
 
-        // detailsText.text = eventDetails;
     }
 
     self.initialize();
@@ -399,7 +382,7 @@ function soundService() {
     var _noteIndex = 0;
     self.controller = null;
     self.loadAmount = 0;
-    self.soundsPath = 'assets/mp3/';
+    self.soundsPath = 'http://srv.re/musical-balls/assets/mp3/';
 
     self.sounds = [
         {sound: 'C', id: 1},
@@ -434,21 +417,11 @@ function soundService() {
 
 
     self.initialize = function () {
-        log("11", "soundService", "initialize", "");
         self.initSound()
     };
 
 
     self.initSound = function () {
-        if (window.top != window) {
-            document.getElementById("header").style.display = "none";
-        }
-
-        if (!createjs.Sound.initializeDefaultPlugins()) {
-            document.getElementById("error").style.display = "block";
-            document.getElementById("content").style.display = "none";
-            return;
-        }
 
         var manifest = [ ];
 
@@ -467,13 +440,10 @@ function soundService() {
 
     var soundLoaded = function (event) {
         _numLoaded++;
-        //  $timeout(function () {
         self.loadAmount = ~~((_numLoaded / self.sounds.length) * 100) + "%"
-        //   });
 
         if (_numLoaded != self.sounds.length)return;
 
-        console.log("29", "soundLoaded", "soundLoaded", _numLoaded, self.sounds.length);
         $("#bt-start").css({display: 'block'})
         setTimeout(function () {
             self.controller.start();
@@ -499,8 +469,8 @@ function soundService() {
     self.playNextNote = function () {
         self.playSound(self.notes[_noteIndex])
         _noteIndex++;
-        if(_noteIndex >= self.notes.length){
-            _noteIndex=0;
+        if (_noteIndex >= self.notes.length) {
+            _noteIndex = 0;
         }
     }
 
@@ -524,10 +494,11 @@ window.log = function f() {
 
     for (var c = "assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,markTimeline,profile,profileEnd,time,timeEnd,trace,warn".split(","), d; !!(d = c.pop());) {a[d] = a[d] || b;}
 })
-        (function () {
-            try {
-                console.log();
-                return window.console;
-            } catch (a) {return (window.console = {});}
-        }());
+        
+(function () {
+    try {
+        console.log();
+        return window.console;
+    } catch (a) {return (window.console = {});}
+}());
 
