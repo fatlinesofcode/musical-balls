@@ -1,8 +1,0 @@
-AppController.js
-Config.js
-apiService.js
-booter.js
-directives.js
-filters.js
-routeService.js
-

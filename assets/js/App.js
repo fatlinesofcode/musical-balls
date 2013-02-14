@@ -1,12 +1,14 @@
-app.controller('AppController', ['$scope', '$timeout', 'soundService', function AppController($scope, $timeout, soundService) {
+$(document).ready(function () {
+    new App(new soundService())
+});
+function App(soundService) {
     /* structure hack for intellij structrue panel */
     var self = this;
-    if (true)self = $scope;
-    /* end */
 
     self.running = false;
     self.initialized = false;
-    self.soundService = soundService;
+    var stageClicked = false;
+    //var soundService = new soundService();
     var stage, canvas;
 
     var colors = ["#FFFFE0", "#BDFCC9", "#FFC0CB", "#DDA0DD", "#87CEEB", "#40E0D0", "#00CCCC"];
@@ -20,9 +22,12 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
     var KEYCODE_LEFT = 37;		//usefull keycode
     var KEYCODE_RIGHT = 39;		//usefull keycode
     var KEYCODE_DOWN = 40;		//usefull keycode
+    var ballsInitalized = false;
+    var iOS = navigator.userAgent.match(/(iPod|iPhone|iPad)/);
 
     self.initialize = function () {
         toggleListeners(true);
+        self.initCanvas();
         soundService.controller = self;
         log("9", "AppController", "initialize", "");
     };
@@ -34,19 +39,16 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         if (!enable)return;
         // add listeners.
 
-        self.$on('$destroy', onDestroy)
     };
     var onDestroy = function (enable) {
         toggleListeners(false);
     };
     self.refresh = function () {
-        $timeout(function () {
-        });
+
     }
     self.start = function () {
-        $("#title").hide()
         log("25", "AppController", "s", "");
-        self.initCanvas();
+        self.initGame()
         self.refresh()
         window.addEventListener( "devicemotion", onDeviceMotion, false );
         $(document).bind('keydown', onKeyboardPress)
@@ -57,14 +59,14 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         canvas = $("#ball-stage").get(0);
         stage = new createjs.Stage(canvas);
 
-        infoText = new createjs.Text("Click or touch to add balls", "14px Arial", "#FFF");
+        infoText = new createjs.Text("Loading...", "14px Arial", "#FFF");
         infoText.lineWidth = "500";
         infoText.textAlign = "center";
         infoText.border = 1;
-        infoText.y = 300;
+        infoText.y = $(window).height()/2;
         infoText.mouseEnabled = false;
 
-        detailsText = new createjs.Text("Details:", "10px Arial", "#FFF");
+        detailsText = new createjs.Text("", "10px Arial", "#FFF");
         detailsText.x = 10;
         detailsText.y = 2;
         detailsText.mouseEnabled = false;
@@ -81,7 +83,16 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         createjs.Ticker.addListener(tick);
         createjs.Ticker.setFPS(FPS);
 
+
+
         self.initialized = true;
+    }
+    self.initGame = function(){
+        if(! iOS){
+            initBalls($(window).width()/2, $(window).height()/2);
+        }else{
+            infoText.text="Touch to start."
+        }
     }
     var onStageResize = function () {
         stage.canvas.width = $(window).width()
@@ -89,13 +100,31 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         infoText.x = ($(window).width()/2) - 0;
         log("64","onStageResize","stage.canvas.width", canvas.width );
     }
+
     var onStagePress = function(e) {
         log("56","onStagePress","e", e);
-        if(balls.length==0){
+        if(! stageClicked){
+            stageClicked=true;
             infoText.text = "Tilt your device or use your keyboard to change gravity."
-         //   infoText.x = ($(window).width()/2) - 180;
         }
-        addBall(e.stageX, e.stageY, e.pointerID)
+        if(!ballsInitalized){
+            initBalls(e.stageX, e.stageY);
+            infoText.text="Click or touch to add more balls"
+        }else{
+            infoText.text = "Tilt your device or use your keyboard to change gravity."
+            addBall(e.stageX, e.stageY, e.pointerID)
+        }
+    }
+    var initBalls = function(stageX, stageY){
+        ballsInitalized = true;
+        var tx = 0;
+        var ty = 0;
+        for(var i=0; i < 7; i++){
+            tx = rand(-300, 300);
+            ty = rand(-200, 200);
+            addBall(stageX+tx, stageY+ty, NaN)
+        }
+        infoText.text = "Click or touch to add more balls."
     }
     var onStageRelease = function(e) {
 
@@ -113,12 +142,12 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
     var addBall = function(x, y, pointerID) {
         if(!self.running){
             soundService.playSound(100)
-            $timeout(function(){
+         //   $timeout(function(){
                 self.running = true;
-            });
+         //   });
 
         }
-        var shape = new Ball();
+        var shape = new createjs.Shape();
         shape.id = balls.length;
         shape.pointerID = pointerID
         var r = Math.random() * colors.length | 0;
@@ -143,11 +172,11 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
     }
     var tick = function () {
         /*
-        for (var i = 0; i < numOfBalls; i++) {
-            self.collide(balls[i]);
-            self.move(balls[i]);
-        }
-        */
+         for (var i = 0; i < numOfBalls; i++) {
+         self.collide(balls[i]);
+         self.move(balls[i]);
+         }
+         */
 
         balls.forEach(move);
         for (var ballA, i = 0, len = numBalls() - 1; i < len; i++) {
@@ -203,13 +232,13 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
             var pos0F = rotate(pos0.x, pos0.y, sin, cos, false),
                     pos1F = rotate(pos1.x, pos1.y, sin, cos, false);
             //adjust positions to actual screen positions
-           // ball1.x = ball0.x + pos1F.x;
+            // ball1.x = ball0.x + pos1F.x;
             setBallX(ball1, ball0.x + pos1F.x)
             //ball1.y = ball0.y + pos1F.y;
             setBallY(ball1, ball0.y + pos1F.y)
-           // ball0.x = ball0.x + pos0F.x;
+            // ball0.x = ball0.x + pos0F.x;
             setBallX(ball0, ball0.x + pos0F.x)
-           // ball0.y = ball0.y + pos0F.y;
+            // ball0.y = ball0.y + pos0F.y;
             setBallY(ball0, ball0.y + pos0F.y)
             //rotate velocities back
             var vel0F = rotate(vel0.x, vel0.y, sin, cos, false),
@@ -238,16 +267,16 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
 
     var checkWalls = function  (ball) {
         if (ball.x + ball.radius > canvas.width) {
-          //  ball.x = canvas.width - ball.radius;
+            //  ball.x = canvas.width - ball.radius;
             setBallX(ball, canvas.width - ball.radius)
             ball.vx *= bounce;
         } else if (ball.x - ball.radius < 0) {
-           // ball.x = ball.radius;
+            // ball.x = ball.radius;
             setBallX(ball, ball.radius)
             ball.vx *= bounce;
         }
         if (ball.y + ball.radius > canvas.height) {
-          //  ball.y = canvas.height - ball.radius;
+            //  ball.y = canvas.height - ball.radius;
             setBallY(ball, canvas.height - ball.radius)
             ball.vy *= bounce;
         } else if (ball.y - ball.radius < 0) {
@@ -264,11 +293,11 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         setBallX(ball, ball.x+ball.vx)
         setBallY(ball, ball.y+ball.vy)
         /*
-        if( isNaN(ball.pointerID)){
-            ball.x += ball.vx;
-            ball.y += ball.vy;
-            updatePosition(ball, ball.x+ball.vx,ball.y+ball.vy)
-        }*/
+         if( isNaN(ball.pointerID)){
+         ball.x += ball.vx;
+         ball.y += ball.vy;
+         updatePosition(ball, ball.x+ball.vx,ball.y+ball.vy)
+         }*/
         checkWalls(ball);
     }
     var setBallX = function(ball,x) {
@@ -297,7 +326,7 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         var amt = 0.01;
         switch(code){
         case KEYCODE_UP:
-                _gravityY -= amt
+            _gravityY -= amt
             break;
         case KEYCODE_DOWN:
             _gravityY += amt
@@ -308,7 +337,7 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
         case KEYCODE_RIGHT:
             _gravityX += amt
             break;
-            default:
+        default:
             break;
         }
     }
@@ -353,9 +382,152 @@ app.controller('AppController', ['$scope', '$timeout', 'soundService', function 
             eventDetails = e.toString();
         }
 
-       // detailsText.text = eventDetails;
+        // detailsText.text = eventDetails;
     }
 
     self.initialize();
     return self;
-}]);
+}
+
+
+function soundService() {
+    /* structure hack for intellij structrue panel */
+    var self = this;
+
+    var preload;
+    var _numLoaded = 0;
+    var _noteIndex = 0;
+    self.controller = null;
+    self.loadAmount = 0;
+    self.soundsPath = 'assets/mp3/';
+
+    self.sounds = [
+        {sound: 'C', id: 1},
+        {sound: 'D', id: 2},
+        {sound: 'E', id: 3},
+        {sound: 'F', id: 4},
+        {sound: 'G', id: 5},
+        {sound: 'A', id: 6},
+        {sound: 'B', id: 7},
+        {sound: 'C_', id: 8},
+        {sound: 'blank', id: 100}
+    ];
+    self.sounds1 = [
+        {sound: 'Game-Shot', id: 1}
+    ];
+
+    var londonBridge = 'g,a,g,f' +
+            ',e,f,g' +
+            ',d,e,f' +
+            ',e,f,g' +
+            'g,a,g,f' +
+            'e,f,g,d,g,e,c';
+
+
+    self.notes = [5, 6, 5, 4,
+        3, 4, 5,
+        2, 3, 4,
+        3, 4, 5,
+        5, 6, 5, 4,
+        3, 4, 5, 2, 5, 3, 1
+    ]
+
+
+    self.initialize = function () {
+        log("11", "soundService", "initialize", "");
+        self.initSound()
+    };
+
+
+    self.initSound = function () {
+        if (window.top != window) {
+            document.getElementById("header").style.display = "none";
+        }
+
+        if (!createjs.Sound.initializeDefaultPlugins()) {
+            document.getElementById("error").style.display = "block";
+            document.getElementById("content").style.display = "none";
+            return;
+        }
+
+        var manifest = [ ];
+
+        for (var i = 0; i < self.sounds.length; i++) {
+            var mp3 = self.sounds[i].sound + ".mp3";
+            var ogg = self.sounds[i].sound + ".ogg";
+            var id = self.sounds[i].id//"0"+(i+1);
+            manifest.push({src: self.soundsPath + mp3 + "|" + self.soundsPath + ogg, id: id, data: id});
+        }
+
+        createjs.Sound.addEventListener("loadComplete", createjs.proxy(soundLoaded, this)); // add an event listener for when load is completed
+        createjs.Sound.registerManifest(manifest);
+        console.log("sound");
+
+    }
+
+    var soundLoaded = function (event) {
+        _numLoaded++;
+        //  $timeout(function () {
+        self.loadAmount = ~~((_numLoaded / self.sounds.length) * 100) + "%"
+        //   });
+
+        if (_numLoaded != self.sounds.length)return;
+
+        console.log("29", "soundLoaded", "soundLoaded", _numLoaded, self.sounds.length);
+        $("#bt-start").css({display: 'block'})
+        setTimeout(function () {
+            self.controller.start();
+        }, 100);
+
+    }
+
+
+    self.stop = function () {
+        if (preload != null) { preload.close(); }
+        createjs.Sound.stop();
+    }
+
+
+    self.playSound = function (id) {
+        //  var instance = createjs.Sound.play(id, createjs.Sound.INTERRUPT_LATE);//, 0, 0, false, 1);
+        var instance = createjs.Sound.play(id, createjs.Sound.INTERRUPT_NONE);//, 0, 0, false, 1);
+        if (instance == null || instance.playState == createjs.Sound.PLAY_FAILED) { return; }
+        instance.onComplete = function (instance) {
+        }
+
+    }
+    self.playNextNote = function () {
+        self.playSound(self.notes[_noteIndex])
+        _noteIndex++;
+        if(_noteIndex >= self.notes.length){
+            _noteIndex=0;
+        }
+    }
+
+    self.initialize();
+    return self;
+}
+
+window.log = function f() {
+    log.history = log.history || [];
+    log.history.push(arguments);
+    if (this.console) {
+        var args = arguments, newarr;
+        args.callee = args.callee.caller;
+        newarr = [].slice.call(args);
+
+        if (typeof console.log === 'object') log.apply.call(console.log, console, newarr); else console.log.apply(console, newarr);
+    }
+};
+(function (a) {
+    function b() {}
+
+    for (var c = "assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,markTimeline,profile,profileEnd,time,timeEnd,trace,warn".split(","), d; !!(d = c.pop());) {a[d] = a[d] || b;}
+})
+        (function () {
+            try {
+                console.log();
+                return window.console;
+            } catch (a) {return (window.console = {});}
+        }());
+
