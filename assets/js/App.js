@@ -32,7 +32,7 @@ function App(soundService) {
     var colors = ["#FFFFE0", "#BDFCC9", "#FFC0CB", "#DDA0DD", "#87CEEB", "#40E0D0", "#00CCCC"];
     var bounce = -0.75;
     var balls = [];
-    var _gravityY = 0.01;
+    var _gravityY = 0.00;
     var _gravityX = 0.0;
     var FPS = 30;
     var infoText, detailsText;
